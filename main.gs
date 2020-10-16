@@ -1,3 +1,10 @@
+var SCRAPING_TARGET_URL = PropertiesService.getScriptProperties().getProperty('SCRAPING_TARGET_URL');
+var SHEET_ID = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+var SHEET_NAME = PropertiesService.getScriptProperties().getProperty('SHEET_NAME');
+var SLACK_URL = PropertiesService.getScriptProperties().getProperty('SLACK_URL');
+var LINE_GROUP_ID = PropertiesService.getScriptProperties().getProperty('LINE_GROUP_ID');
+var LINE_SECRET_KEY = PropertiesService.getScriptProperties().getProperty('LINE_SECRET_KEY');
+
 function scraping() {
   var url = SCRAPING_TARGET_URL;
   var html = UrlFetchApp.fetch(url).getContentText('UTF-8');
