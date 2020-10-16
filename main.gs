@@ -30,7 +30,7 @@ function scraping() {
       break;
     }
 
-    oldImageUrls.push(sheet.getRange("H" + oldTargetRow).getValue());
+    oldImageUrls.push(sheet.getRange('H' + oldTargetRow).getValue());
   }
 
   var bubbles = [];
@@ -46,59 +46,59 @@ function scraping() {
 
     if(oldImageUrls.indexOf(imageUrl) == -1){
       lastRow += 1;
-      sheet.getRange("A" + lastRow).setValue('=IMAGE("' + imageUrl + '")');
-      sheet.getRange("B" + lastRow).setValue(name);
-      sheet.getRange("C" + lastRow).setValue(place);
-      sheet.getRange("D" + lastRow).setValue(roomType);
-      sheet.getRange("E" + lastRow).setValue(price);
-      sheet.getRange("F" + lastRow).setValue(updateDate);
-      sheet.getRange("G" + lastRow).setValue(pageUrl);
-      sheet.getRange("H" + lastRow).setValue(imageUrl);
+      sheet.getRange('A' + lastRow).setValue('=IMAGE("' + imageUrl + '")');
+      sheet.getRange('B' + lastRow).setValue(name);
+      sheet.getRange('C' + lastRow).setValue(place);
+      sheet.getRange('D' + lastRow).setValue(roomType);
+      sheet.getRange('E' + lastRow).setValue(price);
+      sheet.getRange('F' + lastRow).setValue(updateDate);
+      sheet.getRange('G' + lastRow).setValue(pageUrl);
+      sheet.getRange('H' + lastRow).setValue(imageUrl);
  
       postSlack(name, roomType, price, place, pageUrl, imageUrl);
       bubbles.push({
-        type: "bubble",
-        size: "kilo",
+        type: 'bubble',
+        size: 'kilo',
         hero: {
-          type: "image",
+          type: 'image',
           url: imageUrl,
-          size: "full",
-          aspectMode: "cover",
-          aspectRatio: "1:1"
+          size: 'full',
+          aspectMode: 'cover',
+          aspectRatio: '1:1'
         },
         action: {
-          type: "uri",
-          label: "Go",
+          type: 'uri',
+          label: 'Go',
           uri: pageUrl
         },
         body: {
-          type: "box",
-          layout: "vertical",
+          type: 'box',
+          layout: 'vertical',
           contents: [
             {
-              type: "text",
+              type: 'text',
               text: name,
-              weight: "bold",
-              size: "sm",
+              weight: 'bold',
+              size: 'sm',
               wrap: true
             },
             {
-              type: "box",
-              layout: "vertical",
+              type: 'box',
+              layout: 'vertical',
               contents: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: roomType + ' / ' + price + ' / ' + place,
                   wrap: true,
-                  color: "#8c8c8c",
-                  size: "xs",
+                  color: '#8c8c8c',
+                  size: 'xs',
                   flex: 5
                 }
               ]
             }
           ],
-          spacing: "sm",
-          paddingAll: "13px"
+          spacing: 'sm',
+          paddingAll: '13px'
         }
       });
     }
@@ -114,26 +114,26 @@ function postSlack(name, roomType, price, place, pageUrl, imageUrl) {
     method: 'post',
     payload: {
       payload: JSON.stringify({
-        text: "【" + roomType + "】" + name + "【" + price + "】",
+        text: '【' + roomType + '】' + name + '【' + price + '】',
         username: '新しい物件があったよ',
         blocks: [
           {
-            type: "divider"
+            type: 'divider'
           },
           {
-            type: "section",
+            type: 'section',
             text: {
-              type: "mrkdwn",
-              text: "*" + name + "*\n\n- " + roomType + "\n- " + price + "\n- " + place + "\n\n" + pageUrl
+              type: 'mrkdwn',
+              text: '*' + name + '*\n\n- ' + roomType + '\n- ' + price + '\n- ' + place + '\n\n' + pageUrl
             },
-            "accessory": {
-              "type": "image",
-              "image_url": imageUrl,
-              "alt_text": "物件画像"
+            accessory: {
+              type: 'image',
+              image_url: imageUrl,
+              alt_text: '物件画像'
             }
           },
           {
-            "type": "divider"
+            type: 'divider'
           }
         ]
       })
@@ -146,25 +146,25 @@ function postLine(name, bubbles) {
     to: LINE_GROUP_ID,
     messages: [
       {
-        type: "flex",
+        type: 'flex',
         altText: name,
         contents: {
-          type: "carousel",
+          type: 'carousel',
           contents: bubbles
         }
       }
     ]
   };
   var data = {
-    method: "post",
+    method: 'post',
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + LINE_SECRET_KEY
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + LINE_SECRET_KEY
     },
     payload: JSON.stringify(message)
   };
 
-  UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", data);
+  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', data);
 }
 
 function doGet(event) {
