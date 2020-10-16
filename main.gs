@@ -56,56 +56,12 @@ function scraping() {
       sheet.getRange('H' + lastRow).setValue(imageUrl);
  
       postSlack(name, roomType, price, place, pageUrl, imageUrl);
-      bubbles.push({
-        type: 'bubble',
-        size: 'kilo',
-        hero: {
-          type: 'image',
-          url: imageUrl,
-          size: 'full',
-          aspectMode: 'cover',
-          aspectRatio: '1:1'
-        },
-        action: {
-          type: 'uri',
-          label: 'Go',
-          uri: pageUrl
-        },
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: name,
-              weight: 'bold',
-              size: 'sm',
-              wrap: true
-            },
-            {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: roomType + ' / ' + price + ' / ' + place,
-                  wrap: true,
-                  color: '#8c8c8c',
-                  size: 'xs',
-                  flex: 5
-                }
-              ]
-            }
-          ],
-          spacing: 'sm',
-          paddingAll: '13px'
-        }
-      });
+      bubbles.push(buildBubble(name, roomType, price, place, pageUrl, imageUrl));
     }
   }
 
   if (bubbles.length > 0) {
-    postLine(metas[0], bubbles);
+    postLine(bubbles);
   }
 }
 
@@ -141,13 +97,61 @@ function postSlack(name, roomType, price, place, pageUrl, imageUrl) {
   });
 }
 
-function postLine(name, bubbles) {
+function buildBubble(name, roomType, price, place, pageUrl, imageUrl) {
+  return {
+    type: 'bubble',
+    size: 'kilo',
+    hero: {
+      type: 'image',
+      url: imageUrl,
+      size: 'full',
+      aspectMode: 'cover',
+      aspectRatio: '1:1'
+    },
+    action: {
+      type: 'uri',
+      label: 'Go',
+      uri: pageUrl
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'text',
+          text: name,
+          weight: 'bold',
+          size: 'sm',
+          wrap: true
+        },
+        {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: roomType + ' / ' + price + ' / ' + place,
+              wrap: true,
+              color: '#8c8c8c',
+              size: 'xs',
+              flex: 5
+            }
+          ]
+        }
+      ],
+      spacing: 'sm',
+      paddingAll: '13px'
+    }
+  };
+}
+
+function postLine(bubbles) {
   var message = {
     to: LINE_GROUP_ID,
     messages: [
       {
         type: 'flex',
-        altText: name,
+        altText: '新しい物件が登録されました',
         contents: {
           type: 'carousel',
           contents: bubbles
