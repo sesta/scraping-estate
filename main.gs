@@ -35,20 +35,27 @@ function scraping() {
 
   var bubbles = [];
   for(var i = imagePathes.length - 1; i >= 0; i--){
+    var metas = metaStrings[i].replace('<br/ >', '<br />').split('<br />');
+    var name = metas[0];
+    var roomType = metas[2].split(' / ')[0];
+    var price = metas[2].split(' / ')[1];
+    var place = metas[1];
+    var updateDate = metas[3];
     var imageUrl = 'https://tomigaya.jp' + imagePathes[i];
     var pageUrl = 'https://tomigaya.jp/id/' + estateIds[i];
+
     if(oldImageUrls.indexOf(imageUrl) == -1){
       lastRow += 1;
-      var metas = metaStrings[i].replace('<br/ >', '<br />').split('<br />');
       sheet.getRange("A" + lastRow).setValue('=IMAGE("' + imageUrl + '")');
-      sheet.getRange("B" + lastRow).setValue(metas[0]);
-      sheet.getRange("C" + lastRow).setValue(metas[1]);
-      sheet.getRange("D" + lastRow).setValue(metas[2].split(' / ')[0]);
-      sheet.getRange("E" + lastRow).setValue(metas[2].split(' / ')[1]);
-      sheet.getRange("F" + lastRow).setValue(metas[3]);
+      sheet.getRange("B" + lastRow).setValue(name);
+      sheet.getRange("C" + lastRow).setValue(place);
+      sheet.getRange("D" + lastRow).setValue(roomType);
+      sheet.getRange("E" + lastRow).setValue(price);
+      sheet.getRange("F" + lastRow).setValue(updateDate);
       sheet.getRange("G" + lastRow).setValue(pageUrl);
       sheet.getRange("H" + lastRow).setValue(imageUrl);
-
+ 
+      postSlack(name, roomType, price, place, pageUrl, imageUrl);
       bubbles.push({
         type: "bubble",
         size: "kilo",
@@ -70,7 +77,7 @@ function scraping() {
           contents: [
             {
               type: "text",
-              text: metas[0],
+              text: name,
               weight: "bold",
               size: "sm",
               wrap: true
@@ -81,7 +88,7 @@ function scraping() {
               contents: [
                 {
                   type: "text",
-                  text: metas[2].split(' / ')[0] + ' / ' + metas[2].split(' / ')[1] + ' / ' + metas[1],
+                  text: roomType + ' / ' + price + ' / ' + place,
                   wrap: true,
                   color: "#8c8c8c",
                   size: "xs",
@@ -108,6 +115,7 @@ function postSlack(name, roomType, price, place, pageUrl, imageUrl) {
     payload: {
       payload: JSON.stringify({
         text: "【" + roomType + "】" + name + "【" + price + "】",
+        username: '新しい物件があったよ',
         blocks: [
           {
             type: "divider"
@@ -151,7 +159,7 @@ function postLine(name, bubbles) {
     method: "post",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer ${LINE_SECRET_KEY}"
+      "Authorization": "Bearer " + LINE_SECRET_KEY
     },
     payload: JSON.stringify(message)
   };
