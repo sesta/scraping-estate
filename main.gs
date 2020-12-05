@@ -41,8 +41,8 @@ function scraping() {
     var price = metas[2].split(' / ')[1];
     var place = metas[1];
     var updateDate = metas[3];
-    var imageUrl = 'https://tomigaya.jp' + imagePathes[i];
-    var pageUrl = 'https://tomigaya.jp/id/' + estateIds[i];
+    var imageUrl = 'https://hogehoge.jp' + imagePathes[i];
+    var pageUrl = 'https://hogehoge.jp/id/' + estateIds[i];
 
     if(oldImageUrls.indexOf(imageUrl) == -1){
       lastRow += 1;
